@@ -1,47 +1,76 @@
 package com.example.hp.libraryapp;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Booklist extends AppCompatActivity {
-    /*ArrayList<String> books = new ArrayList<>();
-    SQLops sqLops;*/
-    private ListView listView;
+
+
+    ArrayList<String> books;
+    LinkedHashMap<String, List<String>> booksMap;
+    ListView listView;
+    SearchView search;
+    Intent intent;
+    DatabaseHelper dataBaseHelper;
+    BookListAdapter bookListAdapter;
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booklist);
-        /*sqLops = new SQLops(this);*/
-        //displayBooks();
-
-        List<String> books = new ArrayList<>();
-        books.add("The World As It Is: Inside the Obama White House");
-        books.add("I Can't Remember If We Said Goodbye");
-        books.add("Sick: A Memoir");
-        books.add("A Place for Us");
-        books.add("My Plain Jane");
-        books.add("There There");
-        books.add("Broken Lives: How Ordinary Germans Experienced the 20th Century");
-        books.add("He is Enough: Living in the Fullness of Jesus");
-        books.add("The Incurable Romantic and Other Tales of Madness and Desire");
-        books.add("Engraved on the Heart");
-        books.add("Breathless");
-        books.add("Arrowheart");
-
         listView = findViewById(R.id.listview3);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(Booklist.this,android.R.layout.simple_list_item_1,books);
-        listView.setAdapter(adapter);
+        dataBaseHelper = DatabaseHelper.getInstance(getApplicationContext());
+        dataBaseHelper.createDatabase();
+        booksMap = dataBaseHelper.fetchAll();
+        books = new ArrayList<>();
+        for (LinkedHashMap.Entry<String, List<String>> e : booksMap.entrySet()) {
+            books.addAll(e.getValue());
+        }
+        listView = (ListView) findViewById(R.id.listview3);
+        bookListAdapter= new BookListAdapter(books);
+        listView.setAdapter(bookListAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long id) {
+                TextView textView = (TextView) arg1.findViewById(R.id.bookname);
+                Intent intent = new Intent(Booklist.this, bookDisplay.class);
+                intent.putExtra("bookname", textView.getText());
+                startActivity(intent);
+            }
+        });
+        search =  findViewById(R.id.search);
+        search.setActivated(true);
+        search.setQueryHint("Type your keyword here");
+        search.onActionViewExpanded();
+        search.setIconified(false);
+        search.clearFocus();
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                bookListAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
     }
 
-   /* void displayBooks() {
-        books = sqLops.getData("MEMOIR_and_AUTOBIOGRAPHY");
-        books = sqLops.getData("FICTION");
-        books = sqLops.getData("NON_FICTION");
-        books = sqLops.getData("FANTASY");
-    }*/
-}
