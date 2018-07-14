@@ -1,9 +1,11 @@
 package com.example.hp.libraryapp;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Filterable;
 import android.widget.Filter;
@@ -12,32 +14,26 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookListAdapter extends BaseAdapter implements Filterable {
+public class BookListAdapter extends ArrayAdapter<String> implements Filterable {
+    private Context context;
     List<String> books;
+    int res;
     List<String> booksFilterList;
     BookFilter bookFilter;
     private LayoutInflater inflater;
 
-    public BookListAdapter(List<String> bookList) {
+
+
+    public BookListAdapter(ArrayList<String> bookList, int res,Context context) {
+        super(context,res,bookList);
         books= bookList;
         booksFilterList= bookList;
+        this.res = res;
+        this.context = context;
     }
 
 
-    @Override
-    public int getCount() {
-        return books.size();
-    }
 
-    @Override
-    public String getItem(int position) {
-        return books.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
 
     @Override
     public View getView(int position, View view, final ViewGroup parent) {
@@ -46,7 +42,7 @@ public class BookListAdapter extends BaseAdapter implements Filterable {
         if(view == null) {
             inflater = (LayoutInflater) parent.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.search_item, null);
+            view = inflater.inflate(res, parent,false);
         }
 
         TextView textView = (TextView) view.findViewById(R.id.bookname);

@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ public class Booklist extends AppCompatActivity {
     LinkedHashMap<String, List<String>> booksMap;
     ListView listView;
     SearchView search;
-    Intent intent;
     DatabaseHelper dataBaseHelper;
     BookListAdapter bookListAdapter;
     @SuppressLint("WrongViewCast")
@@ -37,8 +35,8 @@ public class Booklist extends AppCompatActivity {
         for (LinkedHashMap.Entry<String, List<String>> e : booksMap.entrySet()) {
             books.addAll(e.getValue());
         }
-        listView = (ListView) findViewById(R.id.listview3);
-        bookListAdapter= new BookListAdapter(books);
+        listView =  findViewById(R.id.listview3);
+        bookListAdapter= new BookListAdapter(books,R.layout.search_item,this);
         listView.setAdapter(bookListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -51,26 +49,27 @@ public class Booklist extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //This is wrong very wrong
         search =  findViewById(R.id.bookname);
-        search.setActivated(true);
-        search.setQueryHint("Type your keyword here");
-        search.onActionViewExpanded();
-        search.setIconified(false);
-        search.clearFocus();
+//        search.setActivated(true);
+//        search.setQueryHint("Type your keyword here");
+//        search.onActionViewExpanded();
+//        search.setIconified(false);
+//        search.clearFocus();
 
-        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                bookListAdapter.getFilter().filter(newText);
-                return false;
-            }
-        });
+//        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//
+//                bookListAdapter.getFilter().filter(newText);
+//                return false;
+//            }
+//        });
     }
     }
 
