@@ -51,7 +51,7 @@ public class Booklist extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        search =  findViewById(R.id.search);
+        search =  findViewById(R.id.bookname);
         search.setActivated(true);
         search.setQueryHint("Type your keyword here");
         search.onActionViewExpanded();
